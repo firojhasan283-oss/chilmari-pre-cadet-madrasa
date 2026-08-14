@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from './Footer';
+import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
@@ -63,8 +63,11 @@ export default function Home() {
             </div>
           </div>
 
+          {/* ডানপাশের সেকশন: লগইন বাটন ও মেনু টগল */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Link to="/login" className="btn-login">🔑 লগইন</Link>
+            <Link to="/login" className="btn-login">
+              🔑 লগইন
+            </Link>
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
               style={{ background: '#f1f5f9', border: 'none', padding: '8px 12px', borderRadius: '8px', fontSize: '18px', cursor: 'pointer', color: '#1e293b' }}
@@ -74,41 +77,140 @@ export default function Home() {
           </div>
         </div>
 
+        {/* মোবাইল ড্রপডাউন মেনু */}
         {mobileMenuOpen && (
           <div style={{ backgroundColor: '#ffffff', borderTop: '1px solid #f1f5f9', padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
             <Link to="/" className="nav-link" onClick={() => setMobileMenuOpen(false)}>হোম</Link>
-            <Link to="/teachers" className="nav-link" onClick={() => setMobileMenuOpen(false)}>শিক্ষকবৃন্দ</Link>
+            <a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>প্রধান শিক্ষকের বাণী</a>
+            <a href="#notice" className="nav-link" onClick={() => setMobileMenuOpen(false)}>নোটিশ বোর্ড</a>
+            <Link to="/contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>যোগাযোগ</Link>
+            
+            <Link to="/teachers" className="nav-link" onClick={() => setMobileMenuOpen(false)}>শিক্ষক বিন্দু</Link>
             <Link to="/students" className="nav-link" onClick={() => setMobileMenuOpen(false)}>ছাত্র-ছাত্রী</Link>
             <Link to="/gallery" className="nav-link" onClick={() => setMobileMenuOpen(false)}>গ্যালারী</Link>
-            <Link to="/contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>যোগাযোগ</Link>
+            
+            {(profile?.role === 'admin' || profile?.role === 'super_admin') && (
+              <Link to="/admin" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Admin</Link>
+            )}
+            
+            {(profile?.role === 'teacher' || profile?.role === 'admin' || profile?.role === 'super_admin') && (
+              <Link to="/teacher-permission" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Teacher Permission Dashboard</Link>
+            )}
+            
+            {profile?.role === 'super_admin' && (
+              <Link to="/super-admin" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Super Admin</Link>
+            )}
+            
             <Link to="/admission" className="btn-primary" style={{ textAlign: 'center' }} onClick={() => setMobileMenuOpen(false)}>অনলাইন ভর্তি</Link>
           </div>
         )}
       </nav>
 
       {/* হিরো সেকশন */}
-      <header style={{ background: 'linear-gradient(135deg, #064e3b 0%, #14532d 50%, #166534 100%)', color: 'white', padding: '50px 20px 70px 20px', textAlign: 'center' }}>
+      <header id="home" style={{ background: 'linear-gradient(135deg, #064e3b 0%, #14532d 50%, #166534 100%)', color: 'white', padding: '50px 20px 70px 20px', textAlign: 'center', position: 'relative' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <span className="badge" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#ffffff', marginBottom: '16px' }}>🎓 নতুন সেশনে ভর্তি চলছে</span>
-          <h2 style={{ fontSize: '2.1rem', fontWeight: '800', margin: '16px 0', lineHeight: '1.3' }}>সুশিক্ষা ও সুন্নাত ভিত্তিক আদর্শ জীবন গড়ার বিশ্বস্ত প্রতিষ্ঠান</h2>
-          <p style={{ fontSize: '15px', color: '#ecfdf5', lineHeight: '1.7', marginBottom: '28px' }}>আমরা দিচ্ছি আধুনিক ক্বওমী ও জেনারেল শিক্ষা ব্যবস্থার এক অনন্য সমন্বয়।</p>
+          <span className="badge" style={{ backgroundColor: 'rgba(255,255,255,0.2)', color: '#ffffff', marginBottom: '16px' }}>
+            🎓 নতুন সেশনে ভর্তি চলছে
+          </span>
+          <h2 style={{ fontSize: '2.1rem', fontWeight: '800', margin: '16px 0', lineHeight: '1.3' }}>
+            সুশিক্ষা ও সুন্নাত ভিত্তিক আদর্শ জীবন গড়ার বিশ্বস্ত প্রতিষ্ঠান
+          </h2>
+          <p style={{ fontSize: '15px', color: '#ecfdf5', lineHeight: '1.7', marginBottom: '28px' }}>
+            আমরা দিচ্ছি আধুনিক ক্বওমী ও জেনারেল শিক্ষা ব্যবস্থার এক অনন্য সমন্বয়। অভিজ্ঞ শিক্ষক মণ্ডলীর তত্ত্বাবধানে আপনার সন্তানের দ্বীনি শিক্ষার পথ সুগম করুন।
+          </p>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/admission" className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#14532d', fontWeight: 'bold' }}>ভর্তি আবেদন করুন</Link>
+            <Link to="/admission" className="btn-primary" style={{ backgroundColor: '#ffffff', color: '#14532d', fontWeight: 'bold' }}>
+              ভর্তি আবেদন করুন
+            </Link>
+            <a href="tel:+8801521553003" className="btn-primary" style={{ backgroundColor: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
+              📞 সরাসরি কল দিন
+            </a>
           </div>
         </div>
       </header>
 
+      {/* মূল কন্টেন্ট */}
       <main style={{ maxWidth: '1200px', margin: '-30px auto 40px auto', padding: '0 16px', position: 'relative', zIndex: 10 }}>
-        <div className="card" style={{ textAlign: 'center' }}>
-          <h3 style={{ color: '#166534', marginTop: 0 }}>স্বাগতম চিলমারী প্রি ক্যাডেট মাদ্রাসায়</h3>
-          <p style={{ color: '#334155' }}>উপরের মেনু থেকে শিক্ষকবৃন্দ, ছাত্র-ছাত্রী, গ্যালারি ও ভর্তি আবেদন পেজে যেতে পারেন।</p>
+        
+        {/* প্রধান শিক্ষকের তথ্য ও বাণী সেকশন */}
+        <section id="about" style={{ marginBottom: '32px' }}>
+          <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+            <div style={{ textAlign: 'center', flexShrink: 0 }}>
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <img 
+                  src="https://i.postimg.cc/xd8py0DW/1786523361131.jpg" 
+                  alt="Arif Ashab Khorshed" 
+                  style={{ width: '130px', height: '130px', borderRadius: '50%', objectFit: 'cover', border: '4px solid #16a34a', boxShadow: '0 6px 16px rgba(0,0,0,0.15)' }}
+                />
+              </div>
+              <h3 style={{ margin: '12px 0 2px 0', fontSize: '20px', color: '#0f172a', fontWeight: '700' }}>Arif Ashab Khorshed</h3>
+              <span className="badge">প্রধান শিক্ষক</span>
+            </div>
+            
+            <div style={{ textAlign: 'left', width: '100%' }}>
+              <h3 style={{ fontSize: '20px', color: '#166534', marginTop: 0, marginBottom: '12px', borderBottom: '2px solid #f1f5f9', paddingBottom: '8px' }}>
+                প্রধান শিক্ষকের বার্তা
+              </h3>
+              <p style={{ lineHeight: '1.8', color: '#334155', margin: 0, fontSize: '15px' }}>
+                "বিসমিল্লাহির রহমানির রহিম। চিলমারী প্রি ক্যাডেট মাদ্রাসায় আপনাকে জানাই আন্তরিক শুভেচ্ছা। আমাদের সুনির্দিষ্ট লক্ষ্য হলো কোমলমতি শিশুদের ধর্মীয় মূল্যবোধ, উত্তম চরিত্র এবং আধুনিক শিক্ষার মাধ্যমে এক আদর্শ সুনাগরিক হিসেবে গড়ে তোলা। অভিজ্ঞ শিক্ষক মণ্ডলীর পরম মমতায় আমরা শিক্ষার্থীদের মেধা ও সুপ্ত প্রতিভার বিকাশে সততার সাথে দায়িত্ব পালন করে যাচ্ছি।"
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* নোটিশ ও বৈশিষ্ট্য */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+          
+          {/* নোটিশ বোর্ড */}
+          <div id="notice" className="card">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+              <h3 style={{ margin: 0, fontSize: '18px', color: '#166534', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                📌 নোটিশ বোর্ড
+              </h3>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ padding: '12px', borderRadius: '10px', background: '#f8fafc', borderLeft: '4px solid #16a34a' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>১২ আগস্ট ২০২৬</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '600' }}>২০২৬-২৭ শিক্ষাবর্ষের নতুন ভর্তি ফরম অনলাইন ও অফিসে পাওয়া যাচ্ছে।</p>
+              </div>
+              <div style={{ padding: '12px', borderRadius: '10px', background: '#f8fafc', borderLeft: '4px solid #eab308' }}>
+                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold' }}>১৫ আগস্ট ২০২৬</span>
+                <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: '600' }}>অভিভাবক সমাবেশ ও বার্ষিক মূল্যায়নী সভা সংক্রান্ত নোটিশ।</p>
+              </div>
+            </div>
+          </div>
+
+          {/* বৈশিষ্ট্যসমূহ */}
+          <div className="card">
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', color: '#166534', borderBottom: '2px solid #f1f5f9', paddingBottom: '10px' }}>
+              🌟 আমাদের বিশেষত্ব
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {['অভিজ্ঞ ও দ্বীনদার শিক্ষক মণ্ডলী', 'হিফজ ও বিশুদ্ধ ক্বিরাআত প্রশিক্ষণ', 'কম্পিউটার ও তথ্যপ্রযুক্তি শিক্ষা', 'নিরাপদ ও সিসিটিভি নিয়ন্ত্রিত ক্যাম্পাস', 'সুপরিসর ক্লাসরুম ও মনোরম পরিবেশ'].map((item, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: '#334155' }}>
+                  <span style={{ color: '#16a34a', fontWeight: 'bold' }}>✓</span>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
+
       </main>
 
-      <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="live-chat-btn">
-        <span>💬</span><span>লাইভ চ্যাট</span>
+      {/* ভাসমান লাইভ চ্যাট বাটন */}
+      <a 
+        href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent('হ্যালো ফিরোজ ভাই, ওয়েবসাইট/অ্যাপ বা লাইভ সাপোর্ট সম্পর্কিত সাহায্য প্রয়োজন।')}`} 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="live-chat-btn"
+      >
+        <span>💬</span>
+        <span>লাইভ চ্যাট</span>
       </a>
 
+      {/* ফুটার */}
       <Footer />
     </div>
   );
